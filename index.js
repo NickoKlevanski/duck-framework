@@ -11,6 +11,7 @@ document.getElementById('app-root').innerHTML = App();
 function App() {
   return `<div>
     ${SearchByFilm()}
+    ${Button()}
     <br/>
     ${FilmListResult()}
   </div>`;
@@ -21,6 +22,10 @@ function SearchByFilm() {
     type="text"
     value="${window.dataStore.currentFilm}"
     onchange="window.dataStore.currentFilm = this.value"/>`;
+}
+
+function Button() {
+  return `Button`;
 }
 
 function FilmListResult() {
