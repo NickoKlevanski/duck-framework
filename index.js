@@ -6,12 +6,18 @@ window.dataStore = {
   currentFilm: '',
 };
 
-document.getElementById('app-root').innerHTML = App();
+window.renderApp = renderApp;
+
+renderApp();
+
+function renderApp() {
+  document.getElementById('app-root').innerHTML = `${App()}`;
+}
 
 function App() {
   return `<div>
     ${SearchByFilm()}
-    ${Button()}
+    ${Button()} ${window.dataStore.currentFilm}
     <br/>
     ${FilmListResult()}
   </div>`;
@@ -21,7 +27,7 @@ function SearchByFilm() {
   return `<input 
     type="text"
     value="${window.dataStore.currentFilm}"
-    onchange="window.dataStore.currentFilm = this.value"/>`;
+    onchange="window.dataStore.currentFilm = this.value; renderApp();"/>`;
 }
 
 function Button() {
@@ -29,5 +35,7 @@ function Button() {
 }
 
 function FilmListResult() {
-  return `FilmListResult`;
+  return `<ul>
+   <li>Film</li>
+  </ul>`;
 }
