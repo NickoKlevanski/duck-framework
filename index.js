@@ -19,7 +19,6 @@ function renderApp() {
 function App() {
   return `<div>
     ${SearchByFilm()}
-    ${Button()} ${window.dataStore.currentFilm}
     <br/>
     ${FilmListResult()}
   </div>`;
@@ -32,12 +31,15 @@ function SearchByFilm() {
     onchange="window.dataStore.currentFilm = this.value; renderApp();"/>`;
 }
 
-function Button() {
-  return `Button`;
-}
-
 function FilmListResult() {
-  return `<ul>
-   <li>Film</li>
-  </ul>`;
+  const { currentFilm } = window.dataStore;
+  const films = data.results.filter(film => film.original_title === currentFilm);
+  let content = '';
+  if (films) {
+    content += 'Lists of films';
+    content += films
+      .map(({ original_title, release_date }) => `<div>${original_title}<br/>${release_date}</div>`)
+      .join('');
+  }
+  return content ? `<div>${content}</div>` : `<div>Search films</div>`;
 }
