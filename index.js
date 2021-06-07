@@ -1,3 +1,5 @@
+import { data } from './mockup-data';
+
 if (module.hot) {
   module.hot.accept();
 }
