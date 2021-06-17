@@ -33,7 +33,12 @@ function SearchByFilm() {
 
 function FilmListResult() {
   const { currentFilm } = window.dataStore;
-  const films = data.results.filter(film => film.original_title === currentFilm);
+  const regex = new RegExp(currentFilm, 'i');
+  const films = data.results.filter(film => {
+    if (currentFilm) {
+      return film.original_title.match(regex);
+    }
+  });
   let content = '';
   if (films) {
     content += 'Lists of films';
