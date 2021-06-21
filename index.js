@@ -40,11 +40,11 @@ function FilmListResult() {
     }
   });
   let content = '';
-  if (films) {
-    content += 'Lists of films';
-    content += films
-      .map(({ original_title, release_date }) => `<div>${original_title}<br/>${release_date}</div>`)
-      .join('');
+  if (films.length) {
+    content += '<h3>Lists of films</h3>';
+    content += `<ul>${films
+      .map(({ original_title, release_date }) => `<li>${original_title}<br/>${release_date}</li>`)
+      .join('')}</ul>`;
   }
-  return content ? `<div>${content}</div>` : `<div>Search films</div>`;
+  return content ? `<div>${content}</div>` : `<h3>Type film's title, please</h3>`;
 }
