@@ -1,4 +1,5 @@
 import { data } from './mockup-data';
+import './style.scss';
 
 if (module.hot) {
   module.hot.accept();
@@ -42,8 +43,11 @@ function FilmListResult() {
   let content = '';
   if (films.length) {
     content += '<h3>Lists of films</h3>';
-    content += `<ul>${films
-      .map(({ original_title, release_date }) => `<li>${original_title}<br/>${release_date}</li>`)
+    content += `<ul class="list">${films
+      .map(
+        ({ original_title, release_date }) =>
+          `<li class="item">${original_title}<br/>${release_date}</li>`,
+      )
       .join('')}</ul>`;
   }
   return content ? `<div>${content}</div>` : `<h3>Type film's title, please</h3>`;
