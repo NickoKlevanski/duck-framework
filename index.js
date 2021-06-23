@@ -21,15 +21,25 @@ function handleClick(id) {
 }
 
 function test(e) {
-  const filmId = e.target.id;
+  const filmId = Number(e.target.id);
   const filmObj = window.dataStore.films.find(elem => elem.id === filmId);
-  // const body = document.querySelector('body');
-  // const block = `
-  //   <div>
-  //     <div>test</div>
-  //   </div>
-  // `
-  // body.innerHTML += block;
+  const body = document.querySelector('body');
+  const backdrop = document.createElement('div');
+  backdrop.classList.add('backdrop', 'js-fade');
+  body.append(backdrop);
+
+  backdrop.classList.add('js-show');
+
+  const div = document.createElement('div');
+  div.classList.add('modal');
+  const block = `
+    <div class="modal__wrapper">
+      <div>${filmObj.title}</div>
+    </div>
+  `;
+  div.innerHTML = block;
+  body.append(div);
+  // console.log(div);
 }
 
 renderApp();
