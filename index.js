@@ -12,15 +12,16 @@ window.dataStore = {
 
 window.renderApp = renderApp;
 window.handleClick = handleClick;
+window.closeModal = closeModal;
 
-function handleClick(id) {
+function handleClick() {
   const list = document.querySelectorAll('li');
   for (let item of list) {
-    item.addEventListener('click', test);
+    item.addEventListener('click', createModal);
   }
 }
 
-function test(e) {
+function createModal(e) {
   const filmId = Number(e.target.id);
   const filmObj = window.dataStore.films.find(elem => elem.id === filmId);
   const body = document.querySelector('body');
@@ -35,11 +36,26 @@ function test(e) {
   const block = `
     <div class="modal__wrapper">
       <div>${filmObj.title}</div>
+      <div>
+        <button
+        type="button"
+        onclick="closeModal();"
+        >
+          Close
+        </button>
+      </div>
     </div>
   `;
   div.innerHTML = block;
   body.append(div);
   // console.log(div);
+}
+
+function closeModal() {
+  const modal = document.querySelector('.modal');
+  const backdrop = document.querySelector('.backdrop');
+  modal.remove();
+  backdrop.remove();
 }
 
 renderApp();
