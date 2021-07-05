@@ -1,4 +1,5 @@
 import { data } from './mockup-data';
+import { getDataFromAPI } from './utils.js';
 import './style.scss';
 
 if (module.hot) {
@@ -8,12 +9,44 @@ if (module.hot) {
 window.dataStore = {
   currentFilm: '',
   films: [],
+  isDataLoading: false,
+  error: null,
+  cacheFilms: [],
 };
 
-window.renderApp = renderApp;
-window.handleClick = handleClick;
-window.closeModal = closeModal;
+window.validateAndLoadData = validateAndLoadData;
+function validateAndLoadData(filmName) {
+  const url = getDataFromAPI(filmName);
+  return fetch(url)
+    .then(resp => resp.json())
+    .then(data => data);
+}
 
+window.performSearch = performSearch;
+function performSearch(film) {
+  window.dataStore.currentFilm = film;
+  window.dataStore.error = null;
+  window.dataStore.isDataLoading = true;
+  window
+    .validateAndLoadData(film)
+    .then(({ data, error }) => {
+      window.dataStore.isDataLoading = false;
+      if (error) {
+        window.dataStore.error = error;
+      } else if (data) {
+        window.dataStore.cacheFilms = data;
+      }
+    })
+    .catch(() => {
+      window.dataStore.error = 'Some error occurred';
+    })
+    .finally(() => {
+      renderApp();
+      handleClick();
+    });
+}
+
+window.handleClick = handleClick;
 function handleClick() {
   const list = document.querySelectorAll('li');
   for (let item of list) {
@@ -23,7 +56,7 @@ function handleClick() {
 
 function createModal(e) {
   const filmId = Number(e.target.id);
-  const filmObj = window.dataStore.films.find(elem => elem.id === filmId);
+  const filmObj = window.dataStore.cacheFilms.results.find(elem => elem.id === filmId);
   const body = document.querySelector('body');
   const backdrop = document.createElement('div');
   backdrop.classList.add('backdrop', 'js-fade');
@@ -33,7 +66,7 @@ function createModal(e) {
 
   const div = document.createElement('div');
   div.classList.add('modal');
-  const block = `
+  const block = /*html*/ `
     <div class="modal__wrapper">
       <div>${filmObj.title}</div>
       <div>
@@ -48,8 +81,9 @@ function createModal(e) {
   `;
   div.innerHTML = block;
   body.append(div);
-  // console.log(div);
 }
+
+window.closeModal = closeModal;
 
 function closeModal() {
   const modal = document.querySelector('.modal');
@@ -60,6 +94,7 @@ function closeModal() {
 
 renderApp();
 
+window.renderApp = renderApp;
 function renderApp() {
   document.getElementById('app-root').innerHTML = `${App()}`;
 }
@@ -73,21 +108,14 @@ function App() {
 }
 
 function SearchByFilm() {
-  return `<input 
+  return /*html*/ `<input 
     type="text"
     value="${window.dataStore.currentFilm}"
-    onchange="window.dataStore.currentFilm = this.value; renderApp(); handleClick();"/>`;
+    onchange="window.performSearch(this.value)"/>`;
 }
 
 function FilmListResult(handleClickFn) {
-  const { currentFilm } = window.dataStore;
-  const regex = new RegExp(currentFilm, 'i');
-  const films = data.results.filter(film => {
-    if (currentFilm) {
-      return film.original_title.match(regex);
-    }
-  });
-  window.dataStore.films = films;
+  const films = window.dataStore.cacheFilms.results || window.dataStore.cacheFilms;
   let content = '';
   if (films.length) {
     content += '<h3>Lists of films</h3>';
